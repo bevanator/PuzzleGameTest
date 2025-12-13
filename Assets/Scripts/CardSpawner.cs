@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using MemoryGame.Data;
+using Random = UnityEngine.Random;
 
 namespace MemoryGame
 {
@@ -17,6 +19,8 @@ namespace MemoryGame
         private readonly Dictionary<int, int> _gridIndexToCardId = new();
         private int _rows = 3;
         private int _columns = 4;
+        public static event Action<int, int> GridSpawnEvent;
+        public static event Action<Dictionary<int, int>> GridInitEvent;
         
         public void Spawn(int rows, int columns)
         {
@@ -37,6 +41,7 @@ namespace MemoryGame
                 CardSlot card = Instantiate(m_CardPrefab, m_CardContainer.transform);
                 card.SetCardId(cardId);
                 card.SetFrontSprite(sprite);
+                card.SetGridIndex(i);
 
                 RectTransform rt = card.GetComponent<RectTransform>();
                 _cards.Add(rt);
@@ -46,7 +51,19 @@ namespace MemoryGame
 
             m_CardContainer.SetGrid(rows, columns);
             m_CardContainer.SetCards(_cards);
+            GridSpawnEvent?.Invoke(rows, columns);
+            GridInitEvent?.Invoke(_gridIndexToCardId);
         }
+
+        public void OnContinuePressed()
+        {
+            if (SaveManager.TryLoadGridSize(out int rows, out int cols))
+            {
+                SetGrid(rows, cols);
+                SpawnFromSave(rows, cols);
+            }
+        }
+        
 
         private List<int> GenerateCardIds(int pairCount)
         {
@@ -100,5 +117,43 @@ namespace MemoryGame
             _rows = rows;
             _columns = columns;
         }
+        
+        public void SpawnFromSave(int rows, int columns)
+        {
+            if (!SaveManager.TryLoad(out var gridData))
+            {
+                Spawn(rows, columns);
+                return;
+            }
+            SaveManager.LoadGrid(gridData);
+
+            Clear();
+
+            for (int i = 0; i < gridData.Count; i++)
+            {
+                if (gridData[i] == "x")
+                {
+                    CardSlot card = Instantiate(m_CardPrefab, m_CardContainer.transform);
+                    card.SetGridIndex(i);
+                    card.Disable();
+                    _cards.Add(card.GetComponent<RectTransform>());
+                    continue;
+                }
+
+                int cardId = int.Parse(gridData[i]);
+                Sprite sprite = m_CardImageData.CardImages[cardId];
+
+                CardSlot slot = Instantiate(m_CardPrefab, m_CardContainer.transform);
+                slot.SetGridIndex(i);
+                slot.SetCardId(cardId);
+                slot.SetFrontSprite(sprite);
+
+                _cards.Add(slot.GetComponent<RectTransform>());
+            }
+
+            m_CardContainer.SetGrid(rows, columns);
+            m_CardContainer.SetCards(_cards);
+        }
+
     }
 }

@@ -22,6 +22,13 @@ namespace MemoryGame
         public bool IsRevealed { get; private set; }
 
         private Sequence _sequence;
+        public int GridIndex { get; private set; }
+
+        public void SetGridIndex(int index)
+        {
+            GridIndex = index;
+        }
+
 
         private void Awake()
         {

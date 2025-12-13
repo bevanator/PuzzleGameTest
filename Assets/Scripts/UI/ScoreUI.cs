@@ -9,23 +9,18 @@ namespace MemoryGame
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI m_ScoreText;
         [SerializeField] private TextMeshProUGUI m_TurnText;
-        [SerializeField] private GameObject m_WinPanel;
-        [SerializeField] private GameObject m_LosePanel;
+
 
         void OnEnable()
         {
             ScoreManager.ScoreChangedEvent += OnScoreChanged;
             ScoreManager.TurnChangedEvent += OnTurnChanged;
-            ScoreManager.GameWinEvent += OnWin;
-            ScoreManager.GameLoseEvent += OnLose;
         }
 
         void OnDisable()
         {
             ScoreManager.ScoreChangedEvent -= OnScoreChanged;
             ScoreManager.TurnChangedEvent -= OnTurnChanged;
-            ScoreManager.GameWinEvent -= OnWin;
-            ScoreManager.GameLoseEvent -= OnLose;
         }
 
         private void OnScoreChanged(int score)
@@ -40,16 +35,5 @@ namespace MemoryGame
                 m_TurnText.text = turns.ToString();
         }
 
-        private void OnWin()
-        {
-            if (m_WinPanel != null)
-                m_WinPanel.SetActive(true);
-        }
-
-        private void OnLose()
-        {
-            if (m_LosePanel != null)
-                m_LosePanel.SetActive(true);
-        }
     }
 }

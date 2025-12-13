@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace MemoryGame
 {
@@ -34,7 +35,7 @@ namespace MemoryGame
             Play(m_FlipClip);
         }
 
-        private void OnMatched()
+        private void OnMatched(List<int> gridPosList)
         {
             Play(m_MatchClip);
         }

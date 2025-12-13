@@ -13,7 +13,7 @@ namespace MemoryGame
         [SerializeField] private float m_MismatchHideDelay = 0.5f;
 
         private readonly List<ICardView> _openCards = new List<ICardView>();
-        public static event Action MatchedEvent;
+        public static event Action<List<int>> MatchedEvent;
         public static event Action MismatchEvent;
 
 
@@ -50,7 +50,9 @@ namespace MemoryGame
             {
                 DOVirtual.DelayedCall(m_MismatchHideDelay*2, () =>
                 {
-                    MatchedEvent?.Invoke();
+                    int gridindex0 = ((CardSlot)cardsToCompare[0]).GridIndex;
+                    int gridindex1 = ((CardSlot)cardsToCompare[1]).GridIndex;
+                    MatchedEvent?.Invoke(new List<int>{gridindex0, gridindex1});
                     foreach (ICardView card in cardsToCompare) 
                         card.Disable();
                 });

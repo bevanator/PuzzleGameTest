@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MemoryGame
@@ -14,74 +15,100 @@ namespace MemoryGame
         public static event Action GameWinEvent;
         public static event Action GameLoseEvent;
 
-        public int Score { get; private set; }
-        public int Turns { get; private set; }
-        public int Combo { get; private set; }
+        private int _score;
+        private int _turns;
+        private int _combo;
 
         private int _matchedPairs;
 
-        void OnEnable()
+        void Start()
         {
             CardMatchManager.MatchedEvent += OnMatched;
             CardMatchManager.MismatchEvent += OnMismatch;
+            CardSpawner.GridSpawnEvent += OnGridInit;
         }
 
         void OnDisable()
         {
             CardMatchManager.MatchedEvent -= OnMatched;
             CardMatchManager.MismatchEvent -= OnMismatch;
+            CardSpawner.GridSpawnEvent -= OnGridInit;
         }
 
-        private void OnMatched()
+        private void OnGridInit(int row, int column)
         {
-            Turns++;
-            Combo++;
+            m_TotalPairs = (row * column) / 2;
+            if (SaveManager.TryGetState(out _score, out _turns)) 
+                LoadGameState();
+            else ResetGameState();
+            
+        }
+
+        private void OnMatched(List<int> gridPosList)
+        {
+            _turns++;
+            _combo++;
 
             int points = 1;
-            if (Combo % 3 == 0)
+            if (_combo % 3 == 0)
                 points += 2;
 
-            Score += points;
+            _score += points;
             _matchedPairs++;
 
-            ScoreChangedEvent?.Invoke(Score);
-            TurnChangedEvent?.Invoke(Turns);
+            ScoreChangedEvent?.Invoke(_score);
+            TurnChangedEvent?.Invoke(_turns);
 
             CheckGameEnd();
+            SaveManager.SaveGameState(_score, _turns);
         }
 
         private void OnMismatch()
         {
-            Turns++;
-            Combo = 0;
+            _turns++;
+            _combo = 0;
 
-            TurnChangedEvent?.Invoke(Turns);
+            TurnChangedEvent?.Invoke(_turns);
             CheckGameEnd();
+            SaveManager.SaveGameState(_score, _turns);
         }
 
         private void CheckGameEnd()
         {
-            if (Turns > m_MinTurnsToWin)
+            if (_turns <= m_MinTurnsToWin)
             {
-                GameLoseEvent?.Invoke();
-                return;
+                if (_matchedPairs == m_TotalPairs)
+                {
+                    GameWinEvent?.Invoke();
+                }
             }
 
-            if (Turns <= m_MinTurnsToWin)
+            if (_turns > m_MinTurnsToWin)
             {
-                if(_matchedPairs == m_TotalPairs) GameWinEvent?.Invoke();
+                {
+                    GameLoseEvent?.Invoke();
+                }
             }
         }
 
-        public void ResetGame()
+        private void LoadGameState()
+        { 
+            ScoreChangedEvent?.Invoke(_score);
+            TurnChangedEvent?.Invoke(_turns);
+        }
+
+
+        private void ResetGameState()
         {
-            Score = 0;
-            Turns = 0;
-            Combo = 0;
+            _score = 0;
+            _turns = 0;
+            _combo = 0;
             _matchedPairs = 0;
 
-            ScoreChangedEvent?.Invoke(Score);
-            TurnChangedEvent?.Invoke(Turns);
+            SaveManager.ResetState();
+            
+            ScoreChangedEvent?.Invoke(_score);
+            TurnChangedEvent?.Invoke(_turns);
         }
     }
 }

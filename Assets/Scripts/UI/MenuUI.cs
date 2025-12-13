@@ -12,6 +12,22 @@ namespace MemoryGame
         [SerializeField] private Button m_Button5X6;
 
         public static event Action<int, int> LevelSelectedEvent;
+        public static event Action ContinueSelectedEvent;
+
+        private void OnEnable()
+        {
+            MainUI.HomePressedEvent += OnHomePressed;
+        }
+
+        private void OnDisable()
+        {
+            MainUI.HomePressedEvent -= OnHomePressed;
+        }
+
+        private void OnHomePressed()
+        {
+            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _));
+        }
 
         private void Start()
         {
@@ -28,6 +44,13 @@ namespace MemoryGame
             m_Button5X6.onClick.AddListener(() =>
             {
                 LevelSelectedEvent?.Invoke(5, 6);
+            });
+            
+            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _));
+            
+            m_ContinueButton.onClick.AddListener(() =>
+            {
+                ContinueSelectedEvent?.Invoke();
             });
         }
     }
