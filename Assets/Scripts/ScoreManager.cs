@@ -56,16 +56,21 @@ namespace MemoryGame
             Combo = 0;
 
             TurnChangedEvent?.Invoke(Turns);
+            CheckGameEnd();
         }
 
         private void CheckGameEnd()
         {
-            if (_matchedPairs < m_TotalPairs) return;
+            if (Turns > m_MinTurnsToWin)
+            {
+                GameLoseEvent?.Invoke();
+                return;
+            }
 
             if (Turns <= m_MinTurnsToWin)
-                GameWinEvent?.Invoke();
-            else
-                GameLoseEvent?.Invoke();
+            {
+                if(_matchedPairs == m_TotalPairs) GameWinEvent?.Invoke();
+            }
         }
 
         public void ResetGame()

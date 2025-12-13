@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MemoryGame
@@ -6,8 +7,8 @@ namespace MemoryGame
     public class ScoreUI : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private Text m_ScoreText;
-        [SerializeField] private Text m_TurnText;
+        [SerializeField] private TextMeshProUGUI m_ScoreText;
+        [SerializeField] private TextMeshProUGUI m_TurnText;
         [SerializeField] private GameObject m_WinPanel;
         [SerializeField] private GameObject m_LosePanel;
 

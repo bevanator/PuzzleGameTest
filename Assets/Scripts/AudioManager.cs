@@ -18,6 +18,7 @@ namespace MemoryGame
             CardSlot.ClickedEvent += OnCardClicked;
             CardMatchManager.MatchedEvent += OnMatched;
             CardMatchManager.MismatchEvent += OnMismatch;
+            ScoreManager.GameLoseEvent += PlayGameOver;
         }
 
         void OnDisable()
@@ -25,6 +26,7 @@ namespace MemoryGame
             CardSlot.ClickedEvent -= OnCardClicked;
             CardMatchManager.MatchedEvent -= OnMatched;
             CardMatchManager.MismatchEvent -= OnMismatch;
+            ScoreManager.GameLoseEvent -= PlayGameOver;
         }
 
         private void OnCardClicked(ICardView card)

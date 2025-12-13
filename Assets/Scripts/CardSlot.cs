@@ -83,5 +83,10 @@ namespace MemoryGame
                     gameObject.SetActive(false);
                 });
         }
+
+        public void SetCardId(int cardId)
+        {
+            m_CardId = cardId;
+        }
     }
 }
