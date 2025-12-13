@@ -20,11 +20,20 @@ namespace MemoryGame
         void OnEnable()
         {
             CardSlot.ClickedEvent += OnCardClicked;
+            MainUI.HomePressedEvent += OnHomePressed;
         }
 
         void OnDisable()
         {
             CardSlot.ClickedEvent -= OnCardClicked;
+            MainUI.HomePressedEvent -= OnHomePressed;
+        }
+
+        private void OnHomePressed()
+        {
+            HideOpenCards(_openCards);
+            _openCards.Clear();
+            DOTween.KillAll();
         }
 
         private void OnCardClicked(ICardView card)

@@ -131,6 +131,7 @@ namespace MemoryGame
                 return;
             }
             SaveManager.LoadGrid(gridData);
+            GridSpawnEvent?.Invoke(rows, columns);
 
             Clear();
 
@@ -159,6 +160,6 @@ namespace MemoryGame
             m_CardContainer.SetGrid(rows, columns);
             m_CardContainer.SetCards(_cards);
         }
-
+        
     }
 }

@@ -36,14 +36,12 @@ namespace MemoryGame
             m_HomeButtonSuccess.onClick.AddListener(() =>
             {
                 m_SuccessPanel.SetActive(false);
-                SaveManager.ClearSave();
                 SetGamePanelState(false);
                 HomePressedEvent?.Invoke();
             });
             m_HomeButtonFail.onClick.AddListener(() =>
             {
                 m_LosePanel.SetActive(false);
-                SaveManager.ClearSave();
                 SetGamePanelState(false);
                 HomePressedEvent?.Invoke();
             });
@@ -86,12 +84,14 @@ namespace MemoryGame
         
         private void OnWin()
         {
+            SaveManager.ClearSave();
             if (m_SuccessPanel != null)
                 m_SuccessPanel.SetActive(true);
         }
 
         private void OnLose()
         {
+            SaveManager.ClearSave();
             if (m_LosePanel != null)
                 m_LosePanel.SetActive(true);
         }

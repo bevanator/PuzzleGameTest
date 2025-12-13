@@ -10,6 +10,7 @@ namespace MemoryGame
         private const string RowsKey = "GRID_ROWS";
         private const string ColumnsKey = "GRID_COLUMNS";
         private const string ScoreKey = "SCORE_VALUE";
+        private const string MatchKey = "MATCH_VALUE";
         private const string TurnKey = "TURN_COUNT";
 
 
@@ -30,6 +31,7 @@ namespace MemoryGame
             CardSpawner.GridInitEvent += InitializeGrid;
             CardSpawner.GridSpawnEvent += SaveGridSize;
             CardMatchManager.MatchedEvent += OnMatched;
+            CardMatchManager.MismatchEvent += Save;
         }
 
         void OnDisable()
@@ -37,6 +39,7 @@ namespace MemoryGame
             CardSpawner.GridInitEvent -= InitializeGrid;
             CardSpawner.GridSpawnEvent -= SaveGridSize;
             CardMatchManager.MatchedEvent -= OnMatched;
+            CardMatchManager.MismatchEvent -= Save;
         }
 
 
@@ -54,10 +57,11 @@ namespace MemoryGame
             return true;
         }
         
-        public static void SaveGameState(int score, int turns)
+        public static void SaveGameState(int score, int turns, int match)
         {
             PlayerPrefs.SetInt(ScoreKey, score);
             PlayerPrefs.SetInt(TurnKey, turns);
+            PlayerPrefs.SetInt(MatchKey, match);
         }
         
         private void SaveGridSize(int rows, int columns)
@@ -148,10 +152,11 @@ namespace MemoryGame
         }
 
 
-        public static bool TryGetState(out int score, out int turns)
+        public static bool TryGetState(out int score, out int turns, out int match)
         {
             score = PlayerPrefs.GetInt(ScoreKey, 0);
             turns = PlayerPrefs.GetInt(TurnKey, 0);
+            match = PlayerPrefs.GetInt(MatchKey, 0);
             return PlayerPrefs.HasKey(TurnKey);
         }
 
@@ -159,6 +164,7 @@ namespace MemoryGame
         {
             PlayerPrefs.DeleteKey(ScoreKey);
             PlayerPrefs.DeleteKey(TurnKey);
+            PlayerPrefs.DeleteKey(MatchKey);
         }
 
         public static void ClearSave()

@@ -39,7 +39,7 @@ namespace MemoryGame
         private void OnGridInit(int row, int column)
         {
             m_TotalPairs = (row * column) / 2;
-            if (SaveManager.TryGetState(out _score, out _turns)) 
+            if (SaveManager.TryGetState(out _score, out _turns, out _matchedPairs)) 
                 LoadGameState();
             else ResetGameState();
             
@@ -61,8 +61,8 @@ namespace MemoryGame
             ScoreChangedEvent?.Invoke(_score);
             TurnChangedEvent?.Invoke(_turns);
 
+            SaveManager.SaveGameState(_score, _turns, _matchedPairs);
             CheckGameEnd();
-            SaveManager.SaveGameState(_score, _turns);
         }
 
         private void OnMismatch()
@@ -71,25 +71,23 @@ namespace MemoryGame
             _combo = 0;
             ComboChangedEvent?.Invoke(_combo);
             TurnChangedEvent?.Invoke(_turns);
+            SaveManager.SaveGameState(_score, _turns, _matchedPairs);
             CheckGameEnd();
-            SaveManager.SaveGameState(_score, _turns);
         }
 
         private void CheckGameEnd()
         {
             if (_turns <= m_MinTurnsToWin)
             {
-                if (_matchedPairs == m_TotalPairs)
+                if (_matchedPairs >= m_TotalPairs)
                 {
                     GameWinEvent?.Invoke();
                 }
             }
 
             if (_turns > m_MinTurnsToWin)
-            {
-                {
-                    GameLoseEvent?.Invoke();
-                }
+            { 
+                GameLoseEvent?.Invoke();
             }
         }
 

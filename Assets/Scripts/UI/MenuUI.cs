@@ -26,7 +26,7 @@ namespace MemoryGame
 
         private void OnHomePressed()
         {
-            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _));
+            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _, out _));
         }
 
         private void Start()
@@ -46,7 +46,7 @@ namespace MemoryGame
                 LevelSelectedEvent?.Invoke(5, 6);
             });
             
-            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _));
+            m_ContinueButton.gameObject.SetActive(SaveManager.TryGetState(out _, out _, out _));
             
             m_ContinueButton.onClick.AddListener(() =>
             {
