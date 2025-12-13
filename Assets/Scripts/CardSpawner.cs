@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using MemoryGame.Data;
 using Random = UnityEngine.Random;
@@ -13,6 +14,8 @@ namespace MemoryGame
         [SerializeField] private CardSlot m_CardPrefab;
         [SerializeField] private CardImageData m_CardImageData;
 
+
+        private List<ICardView> _allCards = new();
 
 
         private readonly List<RectTransform> _cards = new();
@@ -42,6 +45,7 @@ namespace MemoryGame
                 card.SetCardId(cardId);
                 card.SetFrontSprite(sprite);
                 card.SetGridIndex(i);
+                _allCards.Add(card);
 
                 RectTransform rt = card.GetComponent<RectTransform>();
                 _cards.Add(rt);
@@ -53,6 +57,7 @@ namespace MemoryGame
             m_CardContainer.SetCards(_cards);
             GridSpawnEvent?.Invoke(rows, columns);
             GridInitEvent?.Invoke(_gridIndexToCardId);
+            
         }
 
         public void OnContinuePressed()

@@ -68,12 +68,11 @@ namespace MemoryGame
             }
         }
 
-        [ContextMenu("Close All")]
         private void HideOpenCards(List<ICardView> cardsToCompare)
         {
             foreach (var card in cardsToCompare)
                 card.Hide();
-
         }
+        
     }
 }

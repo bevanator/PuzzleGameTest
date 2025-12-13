@@ -12,6 +12,7 @@ namespace MemoryGame
 
         public static event Action<int> ScoreChangedEvent;
         public static event Action<int> TurnChangedEvent;
+        public static event Action<int> ComboChangedEvent;
         public static event Action GameWinEvent;
         public static event Action GameLoseEvent;
 
@@ -48,6 +49,7 @@ namespace MemoryGame
         {
             _turns++;
             _combo++;
+            if(_combo >= 2) ComboChangedEvent?.Invoke(_combo);
 
             int points = 1;
             if (_combo % 3 == 0)
@@ -67,7 +69,7 @@ namespace MemoryGame
         {
             _turns++;
             _combo = 0;
-
+            ComboChangedEvent?.Invoke(_combo);
             TurnChangedEvent?.Invoke(_turns);
             CheckGameEnd();
             SaveManager.SaveGameState(_score, _turns);
@@ -109,6 +111,7 @@ namespace MemoryGame
             
             ScoreChangedEvent?.Invoke(_score);
             TurnChangedEvent?.Invoke(_turns);
+            ComboChangedEvent?.Invoke(_combo);
         }
     }
 }

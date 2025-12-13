@@ -75,8 +75,8 @@ namespace MemoryGame
 
             _hasSaved = PlayerPrefs.HasKey(GridKey);
         }
-        
-        public void InitializeGrid(Dictionary<int, string> loadedGrid)
+
+        private void InitializeGrid(Dictionary<int, string> loadedGrid)
         {
             _gridData.Clear();
 
@@ -94,8 +94,8 @@ namespace MemoryGame
 
         private void OnMatched(List<int> matchedIndices)
         {
-            for (int i = 0; i < matchedIndices.Count; i++)
-                _gridData[matchedIndices[i]] = "x";
+            foreach (var t in matchedIndices)
+                _gridData[t] = "x";
 
             Save();
         }
